@@ -26,11 +26,18 @@ def get_kb_list(kb_id):
     
     return last_created_at, doc_names
 
+def convert_timestamp_to_date(timestamp):
+    return datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d")
+def convert_date_to_timestamp(date):
+    return datetime.strptime(date, "%Y-%m-%d").timestamp()
+
 notion = Client(auth=os.getenv("CLIENT_TOKEN"))
 db_name = os.getenv("DB_NAME")
 db_id = os.getenv("DB_ID")
 page_id = os.getenv("PAGE_ID")
 startDate_timestamp, doc_names = get_kb_list(db_id)
+
+startDate = convert_timestamp_to_date(startDate_timestamp)
 # ednDate is current date
 endDate = datetime.now().strftime("%Y-%m-%d")
 
@@ -52,34 +59,5 @@ db_values = notion.databases.query(
             }
         }
     ).get("results")
-import time
-import subprocess
-current_time=time.strftime("%Y%m%d_%H%M", time.localtime())
-file_name = "filelist"+current_time+".txt"
-dict_name=f'{current_time}_PDFs'
-os.system(f'/bin/mkdir {os.getcwd()}/{dict_name}') # 创建文件夹用于存储抓取到的pdf
-command_header='''/usr/bin/find '/Users/channingtong/Library/Mobile Documents/iCloud~QReader~MarginStudy/Documents' -iname ''';
-with open(file_name,"w") as file:
-# 整理notion中获取的数据然后获得pdf路径
-    title=[]
-    author=[]
-    date=[]
-    filename=[]
-    filedict=[]
-    for item in db_values:
-        title.append(item["properties"]["Name"]["title"][0]["plain_text"])
-        author.append(item["properties"]["Author"]["rich_text"][0]["plain_text"])
-        date.append(item["properties"]["Time"]["number"])
-        # 抓取第一作者的姓
-        first_author=author[-1].split(',')[0]
-        first_author=first_author.split(' ')[-1]
-        # 将当 author,ate和title截取前50个字符拼接成文件名
-        filename.append('\"'+f'{first_author}*- {date[-1]} - {title[-1][:30]}'+'*\"')   
-        cmd_fatch=command_header+filename[-1]
-        os_fatch=subprocess.check_output(cmd_fatch,shell=True)
-        if (os_fatch==b''):
-            print(f'未找到{filename[-1]}')# 如果未找到pdf则输出提示手动添加一下
-        else:
-            filedict.append(os_fatch.decode("utf-8").strip('\n'))
-        file.write(filedict[-1]+'\n'+author[-1]+'\n')
-        os.system(f'/bin/cp \'{filedict[-1]}\'  {os.getcwd()}/{dict_name}')# 将pdf复制到指定文件夹
+
+pprint(db_values)
