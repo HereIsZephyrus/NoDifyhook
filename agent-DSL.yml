@@ -1,0 +1,785 @@
+app:
+  description: ''
+  icon: 📑
+  icon_background: '#E0F2FE'
+  mode: advanced-chat
+  name: zotero文献agent
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/deepseek:0.0.5@fd6efd37c2a931911de8ab9ca3ba2da303bef146d45ee87ad896b04b36d09403
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/siliconflow:0.0.12@2ab1fcd77138b7ecdd707790aa1936d5c187fca547ebd165728237b0630c3a44
+kind: app
+version: 0.2.0
+workflow:
+  conversation_variables: []
+  environment_variables:
+  - description: ''
+    id: e2ce186f-40ee-4b19-99ff-2e2e656ab34b
+    name: BASE_URL
+    selector:
+    - env
+    - BASE_URL
+    value: ''
+    value_type: secret
+  - description: ''
+    id: 96d9a631-de48-4227-9ba2-40539ede026b
+    name: CLIENT_TOKEN
+    selector:
+    - env
+    - CLIENT_TOKEN
+    value: ''
+    value_type: secret
+  - description: ''
+    id: 1bfa9942-c7c8-44eb-bf31-361762771733
+    name: DB_ID
+    selector:
+    - env
+    - DB_ID
+    value: ''
+    value_type: secret
+  - description: ''
+    id: 4ff5e975-1c86-4e19-8744-abb837f15ea8
+    name: KB_ID
+    selector:
+    - env
+    - KB_ID
+    value: ''
+    value_type: secret
+  - description: ''
+    id: 44d638a2-355a-4fb1-8d65-9b542247bfc4
+    name: API_KEY
+    selector:
+    - env
+    - API_KEY
+    value: ''
+    value_type: secret
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 10000
+        file_size_limit: 100
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: false
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: if-else
+      id: 1711528914102-source-1746799639419-target
+      source: '1711528914102'
+      sourceHandle: source
+      target: '1746799639419'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: if-else
+        targetType: code
+      id: 1746799639419-true-1746793005943-target
+      source: '1746799639419'
+      sourceHandle: 'true'
+      target: '1746793005943'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: code
+        targetType: answer
+      id: 1746793005943-source-1746799693243-target
+      source: '1746793005943'
+      sourceHandle: source
+      target: '1746799693243'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: if-else
+        targetType: llm
+      id: 1746799639419-false-17467997930550-target
+      source: '1746799639419'
+      sourceHandle: 'false'
+      target: '17467997930550'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: answer
+        targetType: llm
+      id: 1746799693243-source-17467997930550-target
+      source: '1746799693243'
+      sourceHandle: source
+      target: '17467997930550'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: knowledge-retrieval
+      id: 17467997930550-source-17468000761730-target
+      source: '17467997930550'
+      sourceHandle: source
+      target: '17468000761730'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: variable-aggregator
+      id: 17468000761730-source-1746800180802-target
+      source: '17468000761730'
+      sourceHandle: source
+      target: '1746800180802'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: variable-aggregator
+        targetType: llm
+      id: 1746800180802-source-1746753085148-target
+      source: '1746800180802'
+      sourceHandle: source
+      target: '1746753085148'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: answer
+      id: 1746753085148-source-1711528919501-target
+      source: '1746753085148'
+      sourceHandle: source
+      target: '1711528919501'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: llm
+        targetType: knowledge-retrieval
+      id: 17467997930550-source-17468518976480-target
+      source: '17467997930550'
+      sourceHandle: source
+      target: '17468518976480'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: variable-aggregator
+      id: 17468518976480-source-1746800180802-target
+      source: '17468518976480'
+      sourceHandle: source
+      target: '1746800180802'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 开始
+        type: start
+        variables: []
+      height: 54
+      id: '1711528914102'
+      position:
+        x: 39.852099680696824
+        y: 184.4979563674064
+      positionAbsolute:
+        x: 39.852099680696824
+        y: 184.4979563674064
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: true
+          variable_selector:
+          - '1746800180802'
+          - output
+        desc: ''
+        memory:
+          query_prompt_template: '{{#sys.query#}}'
+          role_prefix:
+            assistant: ''
+            user: ''
+          window:
+            enabled: false
+            size: 50
+        model:
+          completion_params: {}
+          mode: chat
+          name: deepseek-reasoner
+          provider: langgenius/deepseek/deepseek
+        prompt_template:
+        - id: 13ebbfb7-04c3-4eb5-bb84-07d7932c49be
+          role: system
+          text: '你是一个乐于助人的文献助手。
+
+            使用以下内容作为你所学习的知识，放在<context></context> XML标签内。
+
+            <context>
+
+            {{#context#}}
+
+            </context>
+
+            上下文每一个文本为一篇文献的信息，包含name, authors, year, abstract, method等文献信息和文献笔记，请重点阅读abstract和文献笔记的内容，请从中找出符合用户意图的文献。回复包含你的总结和推荐的文献列表两部分，其中Zotero
+            URI和URL必须引用上下文中的真实数据按照以下格式以列表的方式回复:
+
+
+            <output>
+
+            总结回复
+
+
+            **文献列表示例**:
+
+            1. (More extreme precipitation over the Yangtze River Basin, China: Insights
+            from historical and projected perspectives)-(Wu等, 2023)-(你的推荐理由)-https://zotero.org/hereiszephyrus/items/RYBRPQTZ
+
+
+            https://linkinghub.elsevier.com/retrieve/pii/S0169809523002806
+
+            2. ...
+
+            ...
+
+            </output>
+
+            再次检查你输出的Zotero URI和URL是否和上下文内容一直'
+        selected: true
+        title: agent
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '1746753085148'
+      position:
+        x: 2074.8484150412014
+        y: 310.2712620088292
+      positionAbsolute:
+        x: 2074.8484150412014
+        y: 310.2712620088292
+      selected: true
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1746753085148.text#}}'
+        desc: ''
+        selected: false
+        title: 直接回复
+        type: answer
+        variables: []
+      height: 105
+      id: '1711528919501'
+      position:
+        x: 2396.6119851753997
+        y: 286.32978273584484
+      positionAbsolute:
+        x: 2396.6119851753997
+        y: 286.32978273584484
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        code: "import os\nfrom notion_client import Client\nfrom datetime import datetime\n\
+          from functools import partial\nimport requests\nimport json\nimport re\n\
+          \ndef convert_timestamp_to_date(timestamp):\n    # 转换为年月日\n    return datetime.fromtimestamp(timestamp).strftime(\"\
+          %Y-%m-%d\")\ndef convert_date_to_timestamp(date):\n    return datetime.strptime(date,\
+          \ \"%Y-%m-%dT%H:%M:%S.%fZ\").timestamp()\ndef check_empty(json):\n    if\
+          \ (len(json) == 0):\n        return \"\"\n    else:\n        return json[0]['plain_text']\n\
+          def split_paragraph(text):\n    # 将文本每一句话用换行符分割\n    punctuation_pattern\
+          \ = r'[,.。，！？!?]'\n    return re.sub(punctuation_pattern, '\\n', text)\n\
+          def check_file_exist(file_list, file_name):\n    if file_name in file_list:\n\
+          \        return True\n    else:\n        return False\n\ndef fetch_all_notion_database_pages(client_token:\
+          \ str, db_id: str, filter_: dict) -> list:\n    result = []\n    notion\
+          \ = Client(auth=client_token)\n    has_more = True\n    start_cursor = None\n\
+          \    \n    while has_more:\n        try:\n            response = notion.databases.query(\n\
+          \                database_id=db_id,\n                filter=filter_,\n \
+          \               start_cursor=start_cursor,\n                page_size=100\
+          \  # 每次获取100条记录\n            )\n            \n            # 添加当前页的结果\n \
+          \           result.extend(response.get(\"results\", []))\n            \n\
+          \            # 检查是否还有更多页面\n            has_more = response.get(\"has_more\"\
+          , False)\n            start_cursor = response.get(\"next_cursor\")\n   \
+          \         \n        except Exception as e:\n            print(f\"Error fetching\
+          \ database pages: {e}\")\n            break\n    \n    return result\n\n\
+          def get_full_info(properties):\n    title = check_empty(properties['Title']['rich_text'])\n\
+          \    author = check_empty(properties['Authors']['rich_text'])\n    zotero_url\
+          \ = properties['Zotero URI']['url']\n    url = properties['URL']['url']\n\
+          \    year = properties['Year']['number']\n    intext_citation  = check_empty(properties['In-Text\
+          \ Citation']['rich_text'])\n    basic_info = f\"title: {title}\\nauthor:\
+          \ {author}\\nzotero_url: {zotero_url}\\nurl: {url}\\nyear: {year}\\nintext_citation:\
+          \ {intext_citation}\"\n    if (len(properties['Region']['rich_text']) >\
+          \ 0):\n        region = properties['Region']['rich_text'][0]['plain_text']\n\
+          \        basic_info += f\"\\nregion: {region}\"\n\n    if (len(properties['Abstract']['rich_text'])\
+          \ > 0):\n        abstract = split_paragraph(properties['Abstract']['rich_text'][0]['plain_text'])\n\
+          \    else:\n        abstract = \"\"\n\n    note_info = \"\"\n    if (len(properties['Methods']['rich_text'])\
+          \ > 0):\n        methods = properties['Methods']['rich_text'][0]['plain_text']\n\
+          \        note_info += f\"methods: {methods}\\n\"\n    if (len(properties['Problem\
+          \ or Purpose']['rich_text']) > 0):\n        problem = properties['Problem\
+          \ or Purpose']['rich_text'][0]['plain_text']\n        note_info += f\"problem:\
+          \ {problem}\\n\"\n    if (len(properties['Key Findings']['rich_text']) >\
+          \ 0):\n        keyfindings = properties['Key Findings']['rich_text'][0]['plain_text']\n\
+          \        note_info += f\"keyfindings: {keyfindings}\\n\"\n    if (len(properties['Theoretical/Conceptual\
+          \ Framework']['rich_text']) > 0):\n        framework = properties['Theoretical/Conceptual\
+          \ Framework']['rich_text'][0]['plain_text']\n        note_info += f\"framework:\
+          \ {framework}\\n\"\n    \n    note_info = split_paragraph(note_info)\n \
+          \   return f\"basic_info:\\n{basic_info}\\nabstract:\\n{abstract}\\nnote_info:\\\
+          n{note_info}\\n\"\n\ndef get_kb_page(kb_id, api_key, page_index, base_url):\n\
+          \    url = f'{base_url}/datasets/{kb_id}/documents'\n    headers = {'Authorization':\
+          \ f'Bearer {api_key}'}\n    query_params = {'page': page_index, 'limit':\
+          \ 50}\n    try:\n        response = requests.get(url, headers=headers, params=query_params)\n\
+          \        # 检查响应内容是否为空\n        if not response.text:\n            print(\"\
+          Warning: Empty response received\")\n            return 0, False\n     \
+          \       \n        print(f\"Response content: {response.text[:200]}\")  #\
+          \ 只打印前200个字符\n        \n        try:\n            list = response.json()\n\
+          \        except json.JSONDecodeError as e:\n            print(f\"JSON decode\
+          \ error: {e}\")\n            print(f\"Full response content: {response.text}\"\
+          )\n            return 0, False\n        \n        # 提取每个文档的name和created_at\n\
+          \        last_created_at = 0\n        for doc in list['data']:\n       \
+          \     current_created_at = int(doc['created_at'])\n            if current_created_at\
+          \ > last_created_at:\n                last_created_at = current_created_at\n\
+          \        \n        return last_created_at, list['has_more']\n    except\
+          \ requests.exceptions.RequestException as e:\n        print(f\"Request failed:\
+          \ {e}\")\n        if hasattr(e.response, 'text'):\n            print(f\"\
+          Error response content: {e.response.text}\")\n        return -1, False\n\
+          \    except Exception as e:\n        print(f\"Unexpected error: {e}\")\n\
+          \        return -1, False\n\ndef get_kb_list(calc_kb_page):\n    page_index\
+          \ = 1\n    has_more = True\n    total_last_created_at = 0\n    while has_more:\n\
+          \        last_created_at, has_more = calc_kb_page(page_index=page_index)\n\
+          \        if last_created_at > total_last_created_at:\n            total_last_created_at\
+          \ = last_created_at\n        page_index += 1\n    return total_last_created_at\n\
+          \    \n\ndef post_file(kb_id, api_key,identifier, full_info, base_url):\n\
+          \    url = f\"{base_url}/datasets/{kb_id}/document/create_by_text\"\n  \
+          \  headers = {\n        'Authorization': f'Bearer {api_key}',\n        'Content-Type':\
+          \ 'application/json'\n    }\n    request_body = {\n        \"name\": identifier,\n\
+          \        \"text\": full_info,\n        \"indexing_technique\": \"high_quality\"\
+          ,\n        \"doc_form\": \"hierarchical_model\",\n        \"doc_language\"\
+          : \"Chinese\",\n        \"process_rule\": {\n            \"mode\": \"hierarchical\"\
+          ,\n            \"rules\": {\n                \"pre_processing_rules\": [\n\
+          \                    {\n                        \"id\": \"remove_extra_spaces\"\
+          ,\n                        \"enabled\": False,\n                    },\n\
+          \                    {\n                        \"id\": \"remove_urls_emails\"\
+          ,\n                        \"enabled\": False,\n                    }\n\
+          \                ],\n                \"segmentation\": {\n             \
+          \       \"separator\": \"\\n\",\n                    \"max_tokens\": 4000,\n\
+          \                },\n                \"parent_mode\": \"full-doc\",\n  \
+          \              \"subchunk_segmentation\": {\n                    \"separator\"\
+          : \"\\n\",\n                    \"max_tokens\": 128,\n                }\n\
+          \            }\n        }\n    }\n    response = requests.post(url, headers=headers,\
+          \ json=request_body)\n    print(f\"Response status code: {response.status_code}\"\
+          )\n\ndef main(client_token : str, db_id : str, kb_id : str, api_key : str,\
+          \ base_url : str) -> dict:\n    notion = Client(auth=client_token)\n   \
+          \ calc_kb_page = partial(get_kb_page, kb_id=kb_id, api_key=api_key, base_url=base_url)\n\
+          \    startDate_timestamp = get_kb_list(calc_kb_page)\n    startDate = convert_timestamp_to_date(startDate_timestamp)\n\
+          \    filter=  {\n            \"property\": \"last_modified\",\n        \
+          \    \"date\": {\"after\": startDate}\n        }\n    try:\n        db_values\
+          \ = fetch_all_notion_database_pages(client_token, db_id, filter)\n    except\
+          \ Exception as e:\n        print(e)\n\n    num = 0\n    for item in db_values:\n\
+          \        last_modified_timestamp = convert_date_to_timestamp(item['last_edited_time'])\n\
+          \        if last_modified_timestamp < startDate_timestamp:\n           \
+          \ continue\n        identifier = f'{item['id']}.txt'\n        properties\
+          \ = item['properties']\n        full_info = get_full_info(properties)\n\
+          \        post_file(kb_id, api_key,identifier, full_info, base_url)\n   \
+          \     num += 1\n\n    return {\n        \"num\" : f\"Total number of documents\
+          \ updated: {num}\"\n    }"
+        code_language: python3
+        default_value:
+        - key: num
+          type: string
+          value: 同步文档错误
+        desc: ''
+        error_strategy: default-value
+        outputs:
+          num:
+            children: null
+            type: string
+        retry_config:
+          max_retries: 3
+          retry_enabled: true
+          retry_interval: 1000
+        selected: false
+        title: update
+        type: code
+        variables:
+        - value_selector:
+          - env
+          - CLIENT_TOKEN
+          variable: client_token
+        - value_selector:
+          - env
+          - DB_ID
+          variable: db_id
+        - value_selector:
+          - env
+          - KB_ID
+          variable: kb_id
+        - value_selector:
+          - env
+          - API_KEY
+          variable: api_key
+        - value_selector:
+          - env
+          - BASE_URL
+          variable: base_url
+      height: 119
+      id: '1746793005943'
+      position:
+        x: 517.1404608868479
+        y: -88.65314722663894
+      positionAbsolute:
+        x: 517.1404608868479
+        y: -88.65314722663894
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        cases:
+        - case_id: 'true'
+          conditions:
+          - comparison_operator: '='
+            id: d96f999b-2017-409a-adcd-3c232aa7b82c
+            value: '0'
+            varType: number
+            variable_selector:
+            - sys
+            - dialogue_count
+          id: 'true'
+          logical_operator: and
+        desc: ''
+        selected: false
+        title: check-update
+        type: if-else
+      height: 126
+      id: '1746799639419'
+      position:
+        x: 387.8360939244426
+        y: 159.2449944178383
+      positionAbsolute:
+        x: 387.8360939244426
+        y: 159.2449944178383
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        answer: '{{#1746793005943.state#}}'
+        desc: ''
+        selected: false
+        title: upstream-state
+        type: answer
+        variables: []
+      height: 105
+      id: '1746799693243'
+      position:
+        x: 871.7973462247555
+        y: -88.65314722663894
+      positionAbsolute:
+        x: 871.7973462247555
+        y: -88.65314722663894
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: ''
+        model:
+          completion_params: {}
+          mode: chat
+          name: deepseek-chat
+          provider: langgenius/deepseek/deepseek
+        prompt_template:
+        - id: 13ebbfb7-04c3-4eb5-bb84-07d7932c49be
+          role: system
+          text: '```xml
+
+            <instruction>
+
+            你是一个专业的中译英翻译器，负责将中文文本准确、流畅地翻译成英文。请遵循以下步骤完成任务：
+
+
+            1. 仔细阅读并理解输入的中文文本，确保完全掌握其含义和上下文。
+
+            2. 根据中文内容，选择最合适的英文词汇和句式进行翻译，确保翻译结果自然且符合英语表达习惯。
+
+            3. 检查翻译后的英文文本，确保语法正确、逻辑清晰，并且没有遗漏或误解原文的意思。
+
+            4. 输出翻译结果时，确保不包含任何XML标签或其他无关内容，仅提供纯文本的英文翻译。
+
+
+            注意事项：
+
+            - 如果中文文本包含文化特定的表达或成语，请根据上下文选择最贴近的英文表达方式，必要时可添加简短解释。
+
+            - 保持翻译的一致性，特别是对于重复出现的术语或短语。
+
+            - 确保翻译后的英文文本流畅、易读，避免生硬直译。
+
+            </instruction>
+
+
+            <examples>
+
+            <example>
+
+            输入: 今天天气真好，我们去公园散步吧。
+
+            输出: The weather is so nice today. Let''s go for a walk in the park.
+
+            </example>
+
+
+            <example>
+
+            输入: 这本书的内容非常有趣，我推荐你读一读。
+
+            输出: The content of this book is very interesting. I recommend you read
+            it.
+
+            </example>
+
+
+            <example>
+
+            输入: 中国有五千年的悠久历史，文化底蕴深厚。
+
+            输出: China has a long history of five thousand years with profound cultural
+            heritage.
+
+            </example>
+
+            </examples>
+
+
+            <additional_guidelines>
+
+            1. 对于专业术语或特定领域的词汇，请确保使用准确的英文对应词。
+
+            2. 如果中文文本包含诗歌、谚语或其他文学性内容，请尽量保持其韵律和意境。
+
+            3. 注意中英文在表达习惯上的差异，例如中文多用主动语态，而英文可能更倾向于被动语态。
+
+            4. 确保翻译后的英文文本长度适中，既不过于冗长也不过于简略。
+
+            </additional_guidelines>
+
+
+            <quality_control>
+
+            为确保翻译质量，请在完成翻译后进行以下检查：
+
+            1. 对照原文，确认所有信息都已准确翻译。
+
+            2. 检查英文文本的语法、拼写和标点符号是否正确。
+
+            3. 确保翻译结果符合目标读者的阅读习惯和文化背景。
+
+            4. 如果可能，尝试将英文翻译回中文，确认是否与原文意思一致。
+
+            </quality_control>
+
+            ```'
+        - id: e966bf8b-90dc-4b59-ac67-3210fa9acb67
+          role: user
+          text: '{{#sys.query#}}'
+        selected: false
+        title: translator
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: '17467997930550'
+      position:
+        x: 1130.7350836560822
+        y: 274.8104964557978
+      positionAbsolute:
+        x: 1130.7350836560822
+        y: 274.8104964557978
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        dataset_ids:
+        - MU59Uv4uFD/Fwpf7IX5l3uKJ1hdxXmklx9+YQDND8z1f5tx/DG5gmwz8Qw4Kl4zx
+        desc: 这个功能让你能够从知识库中查找与用户问题有关的文本内容。
+        multiple_retrieval_config:
+          reranking_enable: false
+          reranking_mode: reranking_model
+          reranking_model:
+            model: netease-youdao/bce-reranker-base_v1
+            provider: langgenius/siliconflow/siliconflow
+          top_k: 4
+        query_variable_selector:
+        - '17467997930550'
+        - text
+        retrieval_mode: multiple
+        selected: false
+        single_retrieval_config:
+          model:
+            completion_params:
+              frequency_penalty: 0
+              max_tokens: 512
+              presence_penalty: 0
+              temperature: 0
+              top_p: 1
+            mode: chat
+            name: gpt-3.5-turbo
+            provider: openai
+        title: English
+        type: knowledge-retrieval
+      height: 136
+      id: '17468000761730'
+      position:
+        x: 1446.5598350121295
+        y: 148.4621384629539
+      positionAbsolute:
+        x: 1446.5598350121295
+        y: 148.4621384629539
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        output_type: array[object]
+        selected: false
+        title: 变量聚合器
+        type: variable-aggregator
+        variables:
+        - - '17468000761730'
+          - result
+        - - '17468518976480'
+          - result
+      height: 131
+      id: '1746800180802'
+      position:
+        x: 1754.9002195572778
+        y: 294.71520391184436
+      positionAbsolute:
+        x: 1754.9002195572778
+        y: 294.71520391184436
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        dataset_ids:
+        - MU59Uv4uFD/Fwpf7IX5l3uKJ1hdxXmklx9+YQDND8z1f5tx/DG5gmwz8Qw4Kl4zx
+        desc: 这个功能让你能够从知识库中查找与用户问题有关的文本内容。
+        multiple_retrieval_config:
+          reranking_enable: false
+          reranking_mode: reranking_model
+          reranking_model:
+            model: netease-youdao/bce-reranker-base_v1
+            provider: langgenius/siliconflow/siliconflow
+          top_k: 4
+        query_variable_selector:
+        - sys
+        - query
+        retrieval_mode: multiple
+        selected: false
+        single_retrieval_config:
+          model:
+            completion_params:
+              frequency_penalty: 0
+              max_tokens: 512
+              presence_penalty: 0
+              temperature: 0
+              top_p: 1
+            mode: chat
+            name: gpt-3.5-turbo
+            provider: openai
+        title: Chinese
+        type: knowledge-retrieval
+      height: 136
+      id: '17468518976480'
+      position:
+        x: 1434.7599779144869
+        y: 439.5473962196932
+      positionAbsolute:
+        x: 1434.7599779144869
+        y: 439.5473962196932
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: -71.9837889874807
+      y: 282.4059044991098
+      zoom: 0.4970683373103832
