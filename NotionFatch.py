@@ -28,6 +28,34 @@ def check_file_exist(file_list, file_name):
     else:
         return False
 
+def fetch_all_notion_database_pages(client_token: str, db_id: str, filter_: dict) -> list:
+    result = []
+    notion = Client(auth=client_token)
+    has_more = True
+    start_cursor = None
+    
+    while has_more:
+        try:
+            response = notion.databases.query(
+                database_id=db_id,
+                filter=filter_,
+                start_cursor=start_cursor,
+                page_size=100  # 每次获取100条记录
+            )
+            
+            # 添加当前页的结果
+            result.extend(response.get("results", []))
+            
+            # 检查是否还有更多页面
+            has_more = response.get("has_more", False)
+            start_cursor = response.get("next_cursor")
+            
+        except Exception as e:
+            print(f"Error fetching database pages: {e}")
+            break
+    
+    return result
+
 def get_full_info(properties):
     title = check_empty(properties['Title']['rich_text'])
     author = check_empty(properties['Authors']['rich_text'])
@@ -156,20 +184,16 @@ def main(client_token : str, db_id : str, kb_id : str, api_key : str, base_url :
     calc_kb_page = partial(get_kb_page, kb_id=kb_id, api_key=api_key, base_url=base_url)
     startDate_timestamp = get_kb_list(calc_kb_page)
     startDate = convert_timestamp_to_date(startDate_timestamp)
+    filter=  {
+            "property": "last_modified",
+            "date": {"after": startDate}
+        }
     try:
-        db_values = notion.databases.query(
-                **{
-                    "database_id": db_id,
-                    "filter": {
-                        "property": "last_modified",
-                        "date": {"after": startDate}
-                    }
-                }
-        ).get("results")
-    # 打印db_values)
+        db_values = fetch_all_notion_database_pages(client_token, db_id, filter)
     except Exception as e:
         print(e)
 
+    num = 0
     for item in db_values:
         last_modified_timestamp = convert_date_to_timestamp(item['last_edited_time'])
         if last_modified_timestamp < startDate_timestamp:
@@ -178,6 +202,9 @@ def main(client_token : str, db_id : str, kb_id : str, api_key : str, base_url :
         properties = item['properties']
         full_info = get_full_info(properties)
         post_file(kb_id, api_key,identifier, full_info, base_url)
+        num += 1
+
+    print(f"Total number of documents updated: {num}")
 
 if __name__ == "__main__":
     load_dotenv()
