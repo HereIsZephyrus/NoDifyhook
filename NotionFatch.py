@@ -13,6 +13,11 @@ def convert_timestamp_to_date(timestamp):
     return datetime.fromtimestamp(timestamp).strftime("%Y-%m-%d")
 def convert_date_to_timestamp(date):
     return datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ").timestamp()
+def check_empty(json):
+    if (len(json) == 0):
+        return ""
+    else:
+        return json[0]['plain_text']
 def split_paragraph(text):
     # 将文本每一句话用换行符分割
     punctuation_pattern = r'[,.。，！？!?]'
@@ -24,18 +29,21 @@ def check_file_exist(file_list, file_name):
         return False
 
 def get_full_info(properties):
-    title = properties['Title']['rich_text'][0]['plain_text']
-    author = properties['Authors']['rich_text'][0]['plain_text']
+    title = check_empty(properties['Title']['rich_text'])
+    author = check_empty(properties['Authors']['rich_text'])
     zotero_url = properties['Zotero URI']['url']
     url = properties['URL']['url']
     year = properties['Year']['number']
-    intext_citation  = properties['In-Text Citation']['rich_text'][0]['plain_text']
+    intext_citation  = check_empty(properties['In-Text Citation']['rich_text'])
     basic_info = f"title: {title}\nauthor: {author}\nzotero_url: {zotero_url}\nurl: {url}\nyear: {year}\nintext_citation: {intext_citation}"
     if (len(properties['Region']['rich_text']) > 0):
         region = properties['Region']['rich_text'][0]['plain_text']
         basic_info += f"\nregion: {region}"
 
-    abstract = split_paragraph(properties['Abstract']['rich_text'][0]['plain_text'])
+    if (len(properties['Abstract']['rich_text']) > 0):
+        abstract = split_paragraph(properties['Abstract']['rich_text'][0]['plain_text'])
+    else:
+        abstract = ""
 
     note_info = ""
     if (len(properties['Methods']['rich_text']) > 0):
@@ -54,8 +62,8 @@ def get_full_info(properties):
     note_info = split_paragraph(note_info)
     return f"basic_info:\n{basic_info}\nabstract:\n{abstract}\nnote_info:\n{note_info}\n"
 
-def get_kb_page(kb_id, api_key, page_index):
-    url = f'http://dify.channingtong.cn/v1/datasets/{kb_id}/documents'
+def get_kb_page(kb_id, api_key, page_index, base_url):
+    url = f'{base_url}/datasets/{kb_id}/documents'
     headers = {'Authorization': f'Bearer {api_key}'}
     query_params = {'page': page_index, 'limit': 50}
     try:
@@ -103,8 +111,8 @@ def get_kb_list(calc_kb_page):
     return total_last_created_at
     
 
-def post_file(kb_id, api_key,identifier, full_info):
-    url = f"http://dify.channingtong.cn/v1/datasets/{kb_id}/document/create_by_text"
+def post_file(kb_id, api_key,identifier, full_info, base_url):
+    url = f"{base_url}/datasets/{kb_id}/document/create_by_text"
     headers = {
         'Authorization': f'Bearer {api_key}',
         'Content-Type': 'application/json'
@@ -116,27 +124,36 @@ def post_file(kb_id, api_key,identifier, full_info):
         "doc_form": "hierarchical_model",
         "doc_language": "Chinese",
         "process_rule": {
-            "mode": "custom",
+            "mode": "hierarchical",
             "rules": {
-                "pre_process_rules": [],
-                "segmentation":{
-                    "separator": "\n\n",
-                    "max_length": 4000,
+                "pre_processing_rules": [
+                    {
+                        "id": "remove_extra_spaces",
+                        "enabled": False,
+                    },
+                    {
+                        "id": "remove_urls_emails",
+                        "enabled": False,
+                    }
+                ],
+                "segmentation": {
+                    "separator": "\n",
+                    "max_tokens": 4000,
                 },
                 "parent_mode": "full-doc",
-                "subchunk_segmentation":{
+                "subchunk_segmentation": {
                     "separator": "\n",
-                    "max_length": 128,
+                    "max_tokens": 128,
                 }
             }
         }
     }
     response = requests.post(url, headers=headers, json=request_body)
-    print(response.json())
+    print(f"Response status code: {response.status_code}")
 
-def main(client_token : str, db_id : str, kb_id : str, api_key : str):
+def main(client_token : str, db_id : str, kb_id : str, api_key : str, base_url : str):
     notion = Client(auth=client_token)
-    calc_kb_page = partial(get_kb_page, kb_id=kb_id, api_key=api_key)
+    calc_kb_page = partial(get_kb_page, kb_id=kb_id, api_key=api_key, base_url=base_url)
     startDate_timestamp = get_kb_list(calc_kb_page)
     startDate = convert_timestamp_to_date(startDate_timestamp)
     try:
@@ -160,7 +177,7 @@ def main(client_token : str, db_id : str, kb_id : str, api_key : str):
         identifier = f'{item['id']}.txt'
         properties = item['properties']
         full_info = get_full_info(properties)
-        post_file(kb_id, api_key,identifier, full_info)
+        post_file(kb_id, api_key,identifier, full_info, base_url)
 
 if __name__ == "__main__":
     load_dotenv()
@@ -168,4 +185,5 @@ if __name__ == "__main__":
     KB_ID = os.getenv("KB_ID")
     API_KEY = os.getenv("API_KEY")
     CLIENT_TOKEN = os.getenv("CLIENT_TOKEN")
-    main(client_token=CLIENT_TOKEN, db_id=DB_ID, kb_id=KB_ID, api_key=API_KEY)
+    BASE_URL = os.getenv("BASE_URL")
+    main(client_token=CLIENT_TOKEN, db_id=DB_ID, kb_id=KB_ID, api_key=API_KEY, base_url=BASE_URL)
